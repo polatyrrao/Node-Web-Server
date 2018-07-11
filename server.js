@@ -1,5 +1,5 @@
 const express = require("express");
-
+const fs = require('fs');
 const hbs = require('hbs')
 
 const port = process.env.PORT || 3000;
@@ -21,9 +21,14 @@ app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'))
 
 app.use((req, res, next)=>{
-    res.render('maintenance.hbs', {
-      pageTitle:"Maintenance page"
-    })
+  var now = new Date().toString();
+  var log = `${now}: ${req.method} ${req.url}`;
+  console.log(log);
+  fs.appendFile('server.log', log + '\n', (err)=>{if (err) {console.log('unabel to append to server log')}});
+  //  res.render('maintenance.hbs', {
+  //  pageTitle:"Maintenance page";
+  //  })
+    next();
 });
 
 
